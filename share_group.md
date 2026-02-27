@@ -53,12 +53,15 @@ A common mistake when moving away from GLFW is forgetting that a context needs a
 Since the IO thread doesn't draw to the screen, you should use a Pbuffer Surface (Pixel Buffer) or the Surfaceless extension if supported.
 
 ```C++
-// Create a 1x1 dummy surface for the IO thread
-EGLint pbufferAttribs[] = { EGL_WIDTH, 1, EGL_HEIGHT, 1, EGL_NONE };
-EGLSurface ioSurface = eglCreatePbufferSurface(display, config, pbufferAttribs);
+// Inside IO Thread
+glfwMakeContextCurrent(ioContext);
 
-// In the IO Worker Thread:
-eglMakeCurrent(display, ioSurface, ioSurface, ioContext);
+GLuint program = glCreateProgram();
+// ... Attach shaders, Link program ...
+
+// CRITICAL: Insert a sync fence so the Render thread knows we are done
+GLsync uploadFence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+glFlush(); // Force commands to the GPU
 ```
 ## 4. Verifying the PSO Setup
 To confirm your backend is truly utilizing the second thread for PSOs (Shader compilation/linking), you can monitor the GL_COMPLETION_STATUS. This query allows the Render thread to check if the IO thread has finished the heavy lifting without blocking the main loop.
