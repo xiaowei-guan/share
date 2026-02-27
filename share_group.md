@@ -1,4 +1,6 @@
-# 1. The Core Concept: EGL Context Sharing
+# Understanding the Share GroupIn OpenGL, a Context holds the entire state of the machine (which textures are bound, which shaders are active, etc.). By default, resources created in Context A are invisible to Context B.A Share Group is a link between two or more contexts that allows them to share Object Handles.What is Shared?Textures and RenderbuffersBuffer Objects (VBOs, EBOs, etc.)Shader and Program ObjectsWhat is NOT Shared?Container Objects: Specifically VAOs (Vertex Array Objects) and FBOs (Framebuffer Objects). These are considered "state containers" and must be created per-context.The State Machine: Changing the clear color or binding a texture in the IO thread won't affect the Render thread.Expert Tip: While the handles are shared, you must use Sync Objects ($glFenceSync$) to ensure the IO thread has finished writing the data before the Render thread tries to draw with it.
+
+## 1. The Core Concept: EGL Context Sharing
 In EGL, the "Share Group" is established at the moment of context creation. By passing an existing EGLContext into the share_context parameter of eglCreateContext, the driver links their internal resource tables (handles for textures, shaders, and VBOs).
 
 Function Signature
@@ -10,7 +12,7 @@ EGLContext eglCreateContext(
     const EGLint *attrib_list
 );
 ```
-# 2. Implementation: Setting Up Two Contexts
+## 2. Implementation: Setting Up Two Contexts
 To verify that the OpenGL backend uses two threads for PSO (Pipeline State Object) setup, you need a Render Context (Main Thread) and an IO Context (Worker Thread).
 
 ```C++
@@ -32,7 +34,7 @@ if (ioContext == EGL_NO_CONTEXT) {
     // Error: Driver does not support sharing or config mismatch
 }
 ```
-# 3. Handling the IO Thread "Surface"
+## 3. Handling the IO Thread "Surface"
 A common mistake when moving away from GLFW is forgetting that a context needs a Surface to be made "Current," even if it’s just for background loading.
 
 Since the IO thread doesn't draw to the screen, you should use a Pbuffer Surface (Pixel Buffer) or the Surfaceless extension if supported.
@@ -45,7 +47,7 @@ EGLSurface ioSurface = eglCreatePbufferSurface(display, config, pbufferAttribs);
 // In the IO Worker Thread:
 eglMakeCurrent(display, ioSurface, ioSurface, ioContext);
 ```
-# 4. Verifying the PSO Setup
+## 4. Verifying the PSO Setup
 To confirm your backend is truly utilizing the second thread for PSOs (Shader compilation/linking), you can monitor the GL_COMPLETION_STATUS. This query allows the Render thread to check if the IO thread has finished the heavy lifting without blocking the main loop.
 
 Verification Strategy:
