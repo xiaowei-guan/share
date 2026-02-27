@@ -1,4 +1,17 @@
-# Understanding the Share GroupIn OpenGL, a Context holds the entire state of the machine (which textures are bound, which shaders are active, etc.). By default, resources created in Context A are invisible to Context B.A Share Group is a link between two or more contexts that allows them to share Object Handles.What is Shared?Textures and RenderbuffersBuffer Objects (VBOs, EBOs, etc.)Shader and Program ObjectsWhat is NOT Shared?Container Objects: Specifically VAOs (Vertex Array Objects) and FBOs (Framebuffer Objects). These are considered "state containers" and must be created per-context.The State Machine: Changing the clear color or binding a texture in the IO thread won't affect the Render thread.Expert Tip: While the handles are shared, you must use Sync Objects ($glFenceSync$) to ensure the IO thread has finished writing the data before the Render thread tries to draw with it.
+# Understanding the Share Group
+In OpenGL, a Context holds the entire state of the machine (which textures are bound, which shaders are active, etc.).By default, resources created in Context A are invisible to Context B.
+
+A Share Group is a link between two or more contexts that allows them to share Object Handles.
+What is Shared?
+ - Textures and Renderbuffers
+ - Buffer Objects (VBOs, EBOs, etc.)
+ - Shader and Program Objects
+   
+What is NOT Shared?
+ - Container Objects: Specifically VAOs (Vertex Array Objects) and FBOs (Framebuffer Objects). These are considered "state containers" and must be created per-context.
+ - The State Machine: Changing the clear color or binding a texture in the IO thread won't affect the Render thread.
+ 
+Expert Tip: While the handles are shared, you must use Sync Objects ($glFenceSync$) to ensure the IO thread has finished writing the data before the Render thread tries to draw with it.
 
 ## 1. The Core Concept: EGL Context Sharing
 In EGL, the "Share Group" is established at the moment of context creation. By passing an existing EGLContext into the share_context parameter of eglCreateContext, the driver links their internal resource tables (handles for textures, shaders, and VBOs).
