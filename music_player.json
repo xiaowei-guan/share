@@ -1,1 +1,197 @@
-
+[
+  {
+    "id": "root",
+    "component": {
+      "Card": {
+        "child": "main-column"
+      }
+    }
+  },
+  {
+    "id": "main-column",
+    "component": {
+      "Column": {
+        "children": {
+          "explicitList": [
+            "album-art",
+            "track-info",
+            "progress",
+            "time-row",
+            "controls"
+          ]
+        },
+        "gap": "small",
+        "alignment": "center"
+      }
+    }
+  },
+  {
+    "id": "album-art",
+    "component": {
+      "Image": {
+        "url": {
+          "path": "/albumArt"
+        },
+        "altText": {
+          "path": "/album"
+        },
+        "fit": "cover"
+      }
+    }
+  },
+  {
+    "id": "track-info",
+    "component": {
+      "Column": {
+        "children": {
+          "explicitList": [
+            "song-title",
+            "artist"
+          ]
+        },
+        "alignment": "center"
+      }
+    }
+  },
+  {
+    "id": "song-title",
+    "component": {
+      "Text": {
+        "text": {
+          "path": "/title"
+        },
+        "usageHint": "h3"
+      }
+    }
+  },
+  {
+    "id": "artist",
+    "component": {
+      "Text": {
+        "text": {
+          "path": "/artist"
+        },
+        "usageHint": "caption"
+      }
+    }
+  },
+  {
+    "id": "progress",
+    "component": {
+      "ProgressBar": {
+        "progress": {
+          "path": "/progress"
+        }
+      }
+    }
+  },
+  {
+    "id": "time-row",
+    "component": {
+      "Row": {
+        "children": {
+          "explicitList": [
+            "current-time",
+            "total-time"
+          ]
+        },
+        "distribution": "spaceBetween"
+      }
+    }
+  },
+  {
+    "id": "current-time",
+    "component": {
+      "Text": {
+        "text": {
+          "path": "/currentTime"
+        },
+        "usageHint": "caption"
+      }
+    }
+  },
+  {
+    "id": "total-time",
+    "component": {
+      "Text": {
+        "text": {
+          "path": "/totalTime"
+        },
+        "usageHint": "caption"
+      }
+    }
+  },
+  {
+    "id": "controls",
+    "component": {
+      "Row": {
+        "children": {
+          "explicitList": [
+            "prev-btn",
+            "play-btn",
+            "next-btn"
+          ]
+        },
+        "distribution": "center",
+        "gap": "medium"
+      }
+    }
+  },
+  {
+    "id": "prev-btn-text",
+    "component": {
+      "Text": {
+        "text": {
+          "literalString": "⏮"
+        }
+      }
+    }
+  },
+  {
+    "id": "prev-btn",
+    "component": {
+      "Button": {
+        "child": "prev-btn-text",
+        "action": "previous"
+      }
+    }
+  },
+  {
+    "id": "play-btn-text",
+    "component": {
+      "Text": {
+        "text": {
+          "path": "/playIcon"
+        }
+      }
+    }
+  },
+  {
+    "id": "play-btn",
+    "component": {
+      "Button": {
+        "child": "play-btn-text",
+        "action": "playPause"
+      }
+    }
+  },
+  {
+    "id": "next-btn-text",
+    "component": {
+      "Text": {
+        "text": {
+          "literalString": "⏭"
+        }
+      }
+    }
+  },
+  {
+    "id": "next-btn",
+    "component": {
+      "Button": {
+        "child": "next-btn-text",
+        "action": "next"
+      }
+    }
+  }
+]
